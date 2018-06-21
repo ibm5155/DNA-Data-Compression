@@ -1,8 +1,11 @@
 #ifndef _TEXTO_HEADER
 #define _TEXTO_HEADER
 
-#include <stdio.h>
-#define bool unsigned char
+#include <cstdio>
+#include <cstdlib>
+#include <string>
+
+//#define bool unsigned char
 #define true 1
 #define false 0
 

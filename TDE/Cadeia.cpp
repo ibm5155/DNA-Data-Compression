@@ -1,6 +1,7 @@
 #include "Cadeia.h"
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
+
 
 Cadeia *CriaCadeia(char *input, int sizeOfCadeia, char *input2, int sizeofCompatacao) {
 	Cadeia *c = (Cadeia*)malloc(sizeof(Cadeia));
@@ -12,145 +13,157 @@ Cadeia *CriaCadeia(char *input, int sizeOfCadeia, char *input2, int sizeofCompat
 	return c;
 }
 
-Cadeia *CadeiaDuplaIgual(char *c,int *nextIndex) {
+Cadeia *CadeiaDuplaIgual(char *c, int eofindex, int *nextIndex) {
 	/*1.	Verificar se substring contém duplas iguais. */
-	if (c[0] == c[2] == c[4]) {
-		if (c[1] == c[3] == c[5]) {
+	if(nextIndex[0]+6 < eofindex){
+		if (c[0] == c[2] && c[2] == c[4]) {
+			if (c[1] == c[3] && c[3] == c[5]) {
+				nextIndex[0] += 6;
+				char *stringformatada = (char*)malloc(9 * sizeof(char));
+				char *stringcompactada = (char*)malloc(4 * sizeof(char));
+				sprintf(stringformatada, "(%c%c)(%c%c)(%c%c)", c[0], c[1], c[2], c[3], c[4], c[5]);
+				sprintf(stringcompactada, "!%c%c", c[0], c[1]);
+				return CriaCadeia(stringformatada, 9, stringcompactada, 4);
+			}
+		}
+	}
+	return 0;
+}
+
+Cadeia *CadeiaMetadeIgual(char *c, int eofindex, int *nextIndex) {
+	/*2.	Verificar se metade dos caracteres são iguais e depois se a outra metade são iguais e devolver um de cada repetição.*/
+	if (nextIndex[0] + 6 < eofindex) {
+		if (c[0] == c[1] && c[1] == c[2]) {
+			if (c[3] == c[4] && c[4] == c[5]) {
+				nextIndex[0] += 6;
+				char *stringformatada = (char*)malloc(11 * sizeof(char));
+				char *stringcompactada = (char*)malloc(4 * sizeof(char));
+				sprintf(stringformatada, "(%c%c%c)(%c%c%c)", c[0], c[1], c[2], c[3], c[4], c[5]);
+				sprintf(stringcompactada, "$%c%c", c[0], c[3]);
+				return CriaCadeia(stringformatada, 11, stringcompactada, 4);
+			}
+		}
+	}
+	return 0;
+}
+
+Cadeia *CadeiaTudoIgual(char *c, int eofindex, int *nextIndex) {
+	/*3.	Verificar se o k-mer é tudo igual, devolve só um caracter:*/
+	if (nextIndex[0] + 6 < eofindex) {
+		if (c[0] == c[1] && c[1] == c[2] && c[2] == c[3] && c[3] == c[4] && c[4] == c[5]) {
 			nextIndex[0] += 6;
+			char *stringformatada = (char*)malloc(1 * sizeof(char));
+			char *stringcompactada = (char*)malloc(3 * sizeof(char));
+			stringformatada[0] = '\0';
+			sprintf(stringcompactada, "~%c", c[0]);
+			return CriaCadeia(stringformatada, 1, stringcompactada, 3);
+		}
+	}
+	return 0;
+}
+
+Cadeia *CadeiaPar(char *c, int eofindex, int *nextIndex) {
+	/*4.	Verificar se todas as sequencias são pares iguais e devolve um para cada par.*/
+	if (nextIndex[0] + 4 < eofindex) {
+		if (c[0] == c[1] && c[2] == c[3] && c[2] != c[1]) {
+			nextIndex[0] += 4;
 			char *stringformatada = (char*)malloc(9 * sizeof(char));
 			char *stringcompactada = (char*)malloc(4 * sizeof(char));
-			sprintf(stringformatada, "(%c%c)(%c%c)(%c%c)", c[0], c[1], c[2], c[3]);
-			sprintf(stringcompactada, "!%c%c", c[0], c[1]);
-			return CriaCadeia(stringformatada,9,stringcompactada,4);
+			sprintf(stringformatada, "(%c%c)(%c%c)", c[0], c[0], c[2], c[2]);
+			sprintf(stringcompactada, "%%%c%c", c[0], c[3]);
+			return CriaCadeia(stringformatada, 9, stringcompactada, 4);
 		}
 	}
 	return 0;
 }
 
-Cadeia *CadeiaMetadeIgual(char *c, int *nextIndex) {
-	/*2.	Verificar se metade dos caracteres são iguais e depois se a outra metade são iguais e devolver um de cada repetição.*/
-	if (c[0] == c[1] == c[2]) {
-		if (c[3] == c[4] == c[5]) {
-			nextIndex[0] += 6;
-			char *stringformatada = (char*)malloc(11 * sizeof(char));
-			char *stringcompactada = (char*)malloc(4 * sizeof(char));
-			sprintf(stringformatada, "(%c%c%c)(%c%c%c)", c[0], c[1], c[2], c[3],c[4],c[5]);
-			sprintf(stringcompactada, "$%c%c", c[0], c[3]);
-			return CriaCadeia(stringformatada, 11, stringcompactada, 4);
-		}
-	}
-	return 0;
-}
-
-Cadeia *CadeiaTudoIgual(char *c, int *nextIndex) {
-	/*3.	Verificar se o k-mer é tudo igual, devolve só um caracter:*/
-	if (c[0] == c[1] == c[2] == c[3] == c[4] == c[5]) {
-		nextIndex[0] += 6;
-		char *stringformatada = (char*)malloc(1 * sizeof(char));
-		char *stringcompactada = (char*)malloc(3 * sizeof(char));
-		stringformatada[0] = '\0';
-		sprintf(stringcompactada, "~%c", c[0]);
-		return CriaCadeia(stringformatada, 1, stringcompactada, 3);
-	}
-	return 0;
-}
-
-Cadeia *CadeiaPar(char *c, int *nextIndex) {
-	/*4.	Verificar se todas as sequencias são pares iguais e devolve um para cada par.*/
-	if (c[0] == c[1] && c[2] == c[3] && c[2] != c[1]) {
-		nextIndex[0] += 6;
-		char *stringformatada = (char*)malloc(9 * sizeof(char));
-		char *stringcompactada = (char*)malloc(4 * sizeof(char));
-		sprintf(stringformatada, "(%c%c)(%c%c)", c[0], c[0], c[1], c[1]);
-		sprintf(stringcompactada, "%%%c%c", c[0], c[3]);
-		return CriaCadeia(stringformatada, 9, stringcompactada, 4);
-	}
-	return 0;
-}
-
-Cadeia *CadeiaUmDiferente(char *c, int *nextIndex) {
+Cadeia *CadeiaUmDiferente(char *c, int eofindex, int *nextIndex) {
 	/*5.	Verificar se  k - 1 caracteres são iguais e um diferente.*/
-	int cnta = 1;
-	int cntb = 0;
-	char letrab = 0;;
-	for (int i = 1; i < 6; i++) {
-		if (c[i] == c[0]) {
-			cnta++;
-		}
-		else {
-			if (letrab == 0) {
-				letrab = c[i];
+	if (nextIndex[0] + 6 < eofindex) {
+		int cnta = 1;
+		int cntb = 0;
+		char letrab = 0;;
+		for (int i = 1; i < 6; i++) {
+			if (c[i] == c[0]) {
+				cnta++;
 			}
-			else if (letrab != c[i]) {
-				break;
+			else {
+				if (letrab == 0) {
+					letrab = c[i];
+				}
+				else if (letrab != c[i]) {
+					break;
+				}
+				cntb++;
 			}
-			cntb++;
 		}
-	}
-	if (abs(cnta - cntb) == 4) {
-		nextIndex[0] += 6;
-		int sizeofdna = 0;
-		char *stringcompactada = (char*)malloc(4 * sizeof(char));
-		char *stringformatada = 0;
-		/*ex: TAAAAA = (T)(AAAAA) = bTA*/
-		if (c[0] != c[1] && c[1] == c[2]) {
-			sizeofdna = 11;
-			stringformatada = (char*)malloc(sizeofdna * sizeof(char));
-			sprintf(stringformatada, "(%c)(%c%c%c%c%c)", c[0], c[1], c[2], c[3], c[4], c[5]);
-			sprintf(stringcompactada, "b%c%c", c[0], c[1]);
+		if (abs(cnta - cntb) == 4) {
+			nextIndex[0] += 6;
+			int sizeofdna = 0;
+			char *stringcompactada = (char*)malloc(4 * sizeof(char));
+			char *stringformatada = 0;
+			/*ex: TAAAAA = (T)(AAAAA) = bTA*/
+			if (c[0] != c[1] && c[1] == c[2]) {
+				sizeofdna = 11;
+				stringformatada = (char*)malloc(sizeofdna * sizeof(char));
+				sprintf(stringformatada, "(%c)(%c%c%c%c%c)", c[0], c[1], c[2], c[3], c[4], c[5]);
+				sprintf(stringcompactada, "b%c%c", c[0], c[1]);
 
-		}
-		/*ex : ATAAAA = (A)(T)(AAAA) = dAT*/
-		else if (c[0] != c[1] && c[0] == c[2]) {
-			sizeofdna = 13;
-			stringformatada = (char*)malloc(sizeofdna * sizeof(char));
-			sprintf(stringformatada, "(%c)(%c)(%c%c%c%c)", c[0], c[1], c[2], c[3], c[4], c[5]);
-			sprintf(stringcompactada, "d%c%c", c[0], c[1]);
+			}
+			/*ex : ATAAAA = (A)(T)(AAAA) = dAT*/
+			else if (c[0] != c[1] && c[0] == c[2]) {
+				sizeofdna = 13;
+				stringformatada = (char*)malloc(sizeofdna * sizeof(char));
+				sprintf(stringformatada, "(%c)(%c)(%c%c%c%c)", c[0], c[1], c[2], c[3], c[4], c[5]);
+				sprintf(stringcompactada, "d%c%c", c[0], c[1]);
 
-		}
-		/*ex : AATAAA = (AA)(T)(AAA) = eAT*/
-		else if (c[0] != c[2] && c[0] == c[1]) {
-			sizeofdna = 13;
-			stringformatada = (char*)malloc(sizeofdna * sizeof(char));
-			sprintf(stringformatada, "(%c%c)(%c)(%c%c%c)", c[0], c[1], c[2], c[3], c[4], c[5]);
-			sprintf(stringcompactada, "e%c%c", c[0], c[2]);
-		}
-		/*ex : AAATAA = (AAA)(T)(AA) = fAT*/
-		else if (c[0] != c[3] && c[0] == c[1]) {
-			sizeofdna = 13;
-			stringformatada = (char*)malloc(sizeofdna * sizeof(char));
-			sprintf(stringformatada, "(%c%c%c)(%c)(%c%c)", c[0], c[1], c[2], c[3], c[4], c[5]);
-			sprintf(stringcompactada, "f%c%c", c[0], c[3]);
-		}
-		/*ex : AAAATA = (AAAA)(T)(A) = hAT*/
-		else if (c[0] != c[4] && c[0] == c[1]) {
-			sizeofdna = 13;
-			char *stringformatada = (char*)malloc(sizeofdna * sizeof(char));
-			sprintf(stringformatada, "(%c%c%c%c)(%c)(%c)", c[0], c[1], c[2], c[3], c[4], c[5]);
-			sprintf(stringcompactada, "h%c%c", c[0], c[4]);
+			}
+			/*ex : AATAAA = (AA)(T)(AAA) = eAT*/
+			else if (c[0] != c[2] && c[0] == c[1]) {
+				sizeofdna = 13;
+				stringformatada = (char*)malloc(sizeofdna * sizeof(char));
+				sprintf(stringformatada, "(%c%c)(%c)(%c%c%c)", c[0], c[1], c[2], c[3], c[4], c[5]);
+				sprintf(stringcompactada, "e%c%c", c[0], c[2]);
+			}
+			/*ex : AAATAA = (AAA)(T)(AA) = fAT*/
+			else if (c[0] != c[3] && c[0] == c[1]) {
+				sizeofdna = 13;
+				stringformatada = (char*)malloc(sizeofdna * sizeof(char));
+				sprintf(stringformatada, "(%c%c%c)(%c)(%c%c)", c[0], c[1], c[2], c[3], c[4], c[5]);
+				sprintf(stringcompactada, "f%c%c", c[0], c[3]);
+			}
+			/*ex : AAAATA = (AAAA)(T)(A) = hAT*/
+			else if (c[0] != c[4] && c[0] == c[1]) {
+				sizeofdna = 13;
+				stringformatada = (char*)malloc(sizeofdna * sizeof(char));
+				sprintf(stringformatada, "(%c%c%c%c)(%c)(%c)", c[0], c[1], c[2], c[3], c[4], c[5]);
+				sprintf(stringcompactada, "h%c%c", c[0], c[4]);
 
+			}
+			/*ex : AAAAAT = (AAAAA)(T) = iAT*/
+			else {
+				sizeofdna = 11;
+				stringformatada = (char*)malloc(sizeofdna * sizeof(char));
+				sprintf(stringformatada, "(%c%c%c%c%c)(%c)", c[0], c[1], c[2], c[3], c[4], c[5]);
+				sprintf(stringcompactada, "i%c%c", c[0], c[5]);
+			}
+			return CriaCadeia(stringformatada, sizeofdna, stringcompactada, 4);
 		}
-		/*ex : AAAAAT = (AAAAA)(T) = iAT*/
-		else {
-			sizeofdna = 11;
-			stringformatada = (char*)malloc(sizeofdna * sizeof(char));
-			sprintf(stringformatada, "(%c%c%c%c%c)(%c)", c[0], c[1], c[2], c[3], c[4], c[5]);
-			sprintf(stringcompactada, "i%c%c", c[0], c[5]);
-		}
-		return CriaCadeia(stringformatada, sizeofdna, stringcompactada, 4);
 	}
 	return 0;
 }
 
-Cadeia *CadeiaPrimeiroeUltimoDiferentes(char *c, int *nextIndex) {
+Cadeia *CadeiaPrimeiroeUltimoDiferentes(char *c, int eofindex, int *nextIndex) {
 	/*6.	Verificar se todas os caracteres depois do primeiro e antes do último são iguais e devolve o primeiro, um da repetição e o último.*/
-	if (c[0] != c[1] && c[1] == c[2] && c[2] == c[3] && c[3] == c[4] && c[4] != c[5]) {
-		nextIndex[0] += 6;
-		char *stringformatada = (char*)malloc(13 * sizeof(char));
-		char *stringcompactada = (char*)malloc(5 * sizeof(char));
-		sprintf(stringformatada, "(%c)(%c%c%c%c)(%c)", c[0], c[1], c[2], c[3], c[4], c[5]);
-		sprintf(stringcompactada, "&%c%c%c", c[0], c[3],c[5]);
-		return CriaCadeia(stringformatada, 13, stringcompactada, 5);
+	if (nextIndex[0] + 6 < eofindex) {
+		if (c[0] != c[1] && c[1] == c[2] && c[2] == c[3] && c[3] == c[4] && c[4] != c[5]) {
+			nextIndex[0] += 6;
+			char *stringformatada = (char*)malloc(13 * sizeof(char));
+			char *stringcompactada = (char*)malloc(5 * sizeof(char));
+			sprintf(stringformatada, "(%c)(%c%c%c%c)(%c)", c[0], c[1], c[2], c[3], c[4], c[5]);
+			sprintf(stringcompactada, "&%c%c%c", c[0], c[3], c[5]);
+			return CriaCadeia(stringformatada, 13, stringcompactada, 5);
+		}
 	}
 	return 0;
 }

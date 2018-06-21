@@ -1,6 +1,7 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
+#include <string>
+
 #include "Texto.h"
 
 //#include <MT2D/MessageBox/MT2D_MessageBox.h>

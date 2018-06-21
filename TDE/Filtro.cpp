@@ -1,7 +1,8 @@
 #pragma once
 #include "Filtro.h"
-#include <stdlib.h>
-#include <string.h>
+#include <cstdlib>
+#include <string>
+
 
 Filtro *CreateFilter(const char *filter) {
 	Filtro *f = (Filtro*)malloc(sizeof(Filtro));
