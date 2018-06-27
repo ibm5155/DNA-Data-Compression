@@ -49,7 +49,7 @@ Cadeia *CadeiaMetadeIgual(char *c, int eofindex, int *nextIndex) {
 
 Cadeia *CadeiaTudoIgual(char *c, int eofindex, int *nextIndex) {
 	/*3.	Verificar se o k-mer é tudo igual, devolve só um caracter:*/
-	if (nextIndex[0] + 6 < eofindex) {
+	if (nextIndex[0] + 6 < eofindex) {/*1*/
 		if (c[0] == c[1] && c[1] == c[2] && c[2] == c[3] && c[3] == c[4] && c[4] == c[5]) {
 			nextIndex[0] += 6;
 			char *stringformatada = (char*)malloc(1 * sizeof(char));
@@ -82,10 +82,10 @@ Cadeia *CadeiaUmDiferente(char *c, int eofindex, int *nextIndex) {
 	if (nextIndex[0] + 6 < eofindex) {
 		int cnta = 1;
 		int cntb = 0;
-		char letrab = 0;;
-		for (int i = 1; i < 6; i++) {
-			if (c[i] == c[0]) {
-				cnta++;
+		char letrab = 0;; /*4*/
+		for (int i = 1; i < 6; i++) {/*6*/
+			if (c[i] == c[0]) { /*36*/
+				cnta++;         /*36*/
 			}
 			else {
 				if (letrab == 0) {
@@ -223,18 +223,18 @@ Cadeia *CadeiaEhPalindromo(char *c, int eof,int *nextIndex, int poscheck) {
 	int i = 0;
 	unsigned char ehpalindromo = 0;
 	//etapa 1: acha o final do palindromo
-	while (i < eof - 2) {
-		if (c[i] == c[i + 2] && poscheck ==0) {
+	while (i < eof - 2) {/**/  /*(N+1)*(N/2)*/
+		if (c[i] == c[i + 2] && poscheck ==0) {  /*(N+1)*(N/2)-1*/
 			ehpalindromo = 1;//palindromo impar
 			break;
 		}
-		if (c[i] == c[i + 1] && poscheck == 1) {
+		if (c[i] == c[i + 1] && poscheck == 1) {  /*(N+1)*(N/2)-1*/
 			ehpalindromo = 2;//palindromo par
 			break;
 		}
 		i++;
 	}
-	if (i < eof - 2) {
+	if (i < eof - 2) { //1
 		//não chegamos ao final da string, logo existe a chance de ser um palindromo impar|par.
 		//checar
 		int j = 0;
